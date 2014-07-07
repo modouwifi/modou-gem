@@ -1,0 +1,533 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+require 'httparty'
+require 'pry'
+require "ruby-progressbar"
+require "terminal-table"
+
+$host = '192.168.18.1'
+
+###############################
+# network helpers
+###############################
+
+def get(path)
+  HTTParty.get("http://#{$host}#{path}", $auth || {})
+end
+
+def post(path, args={})
+  HTTParty.post("http://#{$host}#{path}", args.merge($auth || {}))
+end
+
+###############################
+# meta helpers
+###############################
+
+def sign_in
+  # result = HTTParty.post("http://#{$host}/api/auth/login", body: %q{{ "password" : "dropbear" }})
+  result = post('/api/auth/login', { body: %q{{ "password" : "dropbear" }} })
+
+  cookie = result.headers['Set-Cookie']
+
+  $auth = { headers: { 'Cookie' => cookie }, timeout: 999 }
+end
+
+def signin_required!
+  sign_in unless $auth
+end
+
+def table_from_response(response)
+  table = Terminal::Table.new do |table|
+    table.rows = response
+  end
+end
+
+###############################
+# commands
+###############################
+
+def print_help
+  puts "available commands:"
+  puts
+  puts "modou version"
+  puts "modou update_check"
+  puts "modou download_firmware"
+  puts "modou upgrade"
+  puts "modou reboot"
+  puts "modou safe_reboot"
+  puts "modou client_mac"
+  puts "modou internet_test"
+  puts "modou wired_connections"
+  puts "modou wired_devices_info"
+  puts "modou wifi_devices_info"
+  puts "modou system_time"
+  puts "modou flash_info"
+
+  puts
+  puts "========== firmware =========="
+  puts "modou firmware info"
+  puts "modou firmware check"
+  puts "modou firmware download"
+  puts "modou firmware upgrade"
+
+  puts
+  puts "========== backlight =========="
+  puts "modou backlight lock"
+  puts "modou backlight unlock"
+  puts "modou backlight wakeup"
+
+  puts
+  puts "========== security =========="
+  puts "modou security info"
+  puts "modou security on"
+  puts "modou security off"
+
+  puts
+  puts "========== wan =========="
+  puts "modou wan info"
+  puts "modou wan traffics"
+
+  puts
+  puts '========== wifi =========='
+  puts 'modou wifi info'
+  puts "modou wifi enabled"
+
+  puts
+  puts '========== lan =========='
+  puts 'modou lan info'
+
+  puts
+  puts '========== disk =========='
+  puts 'modou disk info'
+  puts 'modou disk eject'
+
+  puts
+  puts '========== devices =========='
+  puts 'modou devices wired'
+  puts 'modou devices wifi'
+  puts 'modou devices whitelisted'
+  puts 'modou devices blacklisted'
+  puts 'modou devices graylisted'
+end
+
+def print_version_info
+  response = get("/api/system/get_version_info")
+
+  puts "Firmware Version: #{response['version1']}"
+  puts "Hardware Version: #{response['version2']}"
+end
+
+def reboot
+  signin_required!
+
+  get('/api/system/reboot')
+  puts "now rebooting..."
+end
+
+def safe_reboot
+  signin_required!
+
+  get('/api/system/safe_reboot')
+  puts "rebooting into safe mode..."
+end
+
+def backlight_control(command)
+  signin_required!
+
+  case command
+  when 'lock'
+    get('/api/system/lock_backlight')
+  when 'unlock'
+    get('/api/system/unlock_backlight')
+  when 'wakeup'
+    get('/api/system/wakeup_backlight')
+  end
+end
+
+def security_control(command)
+  signin_required!
+
+  case command
+  when 'info'
+    response = get('/api/security/get_config')
+    if response['enabled']
+      puts "wifi security is on"
+    else
+      puts "wifi security is off"
+    end
+  when 'on'
+  when 'off'
+  end
+end
+
+def internet_test
+  signin_required!
+
+  response = get('/api/wan/is_internet_available')
+
+  case response['code']
+  when 0
+    puts "connected to the Internet"
+  when 1
+    puts "DNS resolution failure"
+  when 2
+    puts "cannot reach the gateway"
+  when -1
+    puts "busy, try again later"
+  end
+end
+
+def print_client_mac
+  signin_required!
+
+  response = get('/api/wan/clientmacaddr')
+
+  puts response['macaddr']
+end
+
+def wan_control(command)
+  signin_required!
+
+  case command
+  when 'info'
+    response = get('/api/wan/get_info')
+
+    puts table_from_response(response)
+  when 'traffics'
+    response = get('/api/wan/get_traffics')
+
+    puts table_from_response(response)
+  end
+end
+
+def wifi_control(command)
+  signin_required!
+
+  case command
+  when 'enabled'
+    response = get('/api/wifi/is_enabled')
+
+    if response['is_enabled']
+      puts "wifi is on"
+    else
+      puts "wifi is off"
+    end
+  when 'info'
+    response = get('/api/wifi/get_config')
+
+    table = table_from_response(response['2g'])
+    table.title = '2.4G'
+    puts table
+
+    table = table_from_response(response['5g'])
+    table.title = '5G'
+    puts table
+  end
+end
+
+def lan_control(command)
+  signin_required!
+
+  case command
+  when 'info'
+    response = get('/api/lan/get_lan_config')
+
+    table = table_from_response(response)
+    puts table
+  end
+end
+
+def print_wired_connections
+  signin_required!
+
+  response = get('/api/system/get_cable_connection')
+
+  table = table_from_response(response)
+  puts table
+end
+
+def print_system_time
+  signin_required!
+
+  response = get('/api/system/get_time')
+
+  table = table_from_response(response)
+  puts table
+end
+
+def disk_control(command)
+  signin_required!
+
+  case command
+  when 'info'
+    response = get('/api/devices/disk')
+
+    if response.empty?
+      puts 'no disks attached'
+    else
+      table = table_from_response(response)
+      puts table
+    end
+  when 'eject'
+    response = get('/api/devices/disk_uninstall')
+
+    puts "you are now safe to remove the external drive."
+  end
+end
+
+def print_flash_info
+  signin_required!
+
+  response = get('/api/devices/ddr2_flash')
+
+  table = table_from_response(response)
+  puts table
+end
+
+def print_wired_devices_info
+  signin_required!
+
+  response = get('/api/devices/cables')
+
+  if response['devices'].empty?
+    puts "no wired devices."
+  else
+    table = table_from_response(response['devices'])
+    puts table
+  end
+end
+
+def print_wifi_devices_info
+  signin_required!
+
+  response = get('/api/devices/wifis')
+
+  if response['devices'].empty?
+    puts "no wifi devices."
+  else
+    response['devices'].each do |device|
+      table = table_from_response(device)
+      puts table
+    end
+  end
+end
+
+def devices_control(command)
+  signin_required!
+
+  case command
+  when 'wired'
+    print_wired_devices_info
+  when 'wifi'
+    print_wifi_devices_info
+  when /blacklist/
+    response = get('/api/devices/blacklist')
+
+    if response['devices'].empty?
+      puts "no blacklisted devices."
+    else
+      response['devices'].each do |device|
+        table = table_from_response(device)
+        puts table
+      end
+    end
+  when /whitelist/
+    response = get('/api/devices/whitelist')
+
+    if response['devices'].empty?
+      puts "no whitelisted devices."
+    else
+      response['devices'].each do |device|
+        table = table_from_response(device)
+        puts table
+      end
+    end
+  when /graylist/
+    response = get('/api/devices/graylist')
+
+    if response['devices'].empty?
+      puts "no graylisted devices."
+    else
+      response['devices'].each do |device|
+        table = table_from_response(device)
+        puts table
+      end
+    end
+  end
+end
+
+###############################
+# firmware upgrade
+###############################
+
+def firmware_control(command)
+  signin_required!
+
+  case command
+  when 'info'
+    print_version_info
+  when 'check'
+    check_for_upgrade
+  when 'download'
+    download_firmware
+  when 'upgrade'
+    upgrade
+  end
+end
+
+def check_for_upgrade
+  signin_required!
+
+  response = get("/api/system/check_remote_version_upgrade")
+
+  if response['code'] == 0
+    puts
+    puts "new version found: #{response['version']}"
+    puts
+    $filename = response['filename']
+    $filesize = response['filesize']
+    puts "filename: #{response['filename']}, size: #{response['filesize']}"
+    puts
+    puts "release notes:"
+    puts
+    puts response['releasenote']
+  else
+    puts response['msg']
+    exit
+  end
+end
+
+def cancel_download
+  puts
+  get("/api/system/cancel_download")
+
+  $download_canceled = true
+
+  puts
+  sleep 2
+  puts "download canceled."
+
+  exit
+end
+
+def download_firmware
+  signin_required!
+
+  check_for_upgrade unless $filename && $filesize
+
+  trap("SIGINT") { cancel_download }
+
+  # should be post?
+  response = post("/api/system/download_version_upgrade")
+
+  puts
+  puts "downloading firmware..."
+  puts
+
+  progressbar = ProgressBar.create(:format => '%a |%b>>%i| %p%% %t')
+
+  begin
+    sleep 1
+    jsondata =  JSON({ filename: $filename, filesize: $filesize })
+
+    # response = HTTParty.post("http://#{$host}/api/system/check_download_progress", args)
+    response = post('/api/system/check_download_progress', { body: jsondata })
+
+    case response['code']
+    when '0'
+      # download completed
+      return
+    when '1'
+      # download in progress
+    else
+      puts
+      puts "================= error downloading firmware ================="
+
+      cancel_download
+    end
+
+    progressbar.progress = response['percent']
+
+  end while response['percent'] != 100 || $download_canceled
+end
+
+def upgrade
+  signin_required!
+
+  response = get('/api/system/check_local_version_upgrade')
+
+  download_firmware unless response['code'] == 0
+
+  puts
+  puts "upgrading system...."
+  puts
+
+  get('/api/system/upgrade_version')
+
+  begin
+    sleep 1
+
+    response = get('/api/system/check_upgrade_progress')
+
+    p response
+
+  end while response['code'] != '0'
+end
+
+###############################
+# main
+###############################
+
+if ARGV.count == 0
+  print_help
+else
+  case ARGV[0]
+  when 'version'
+    print_version_info
+  when 'update_check'
+    check_for_upgrade
+  when 'download_firmware'
+    download_firmware
+  when 'upgrade'
+    upgrade
+  when 'reboot'
+    reboot
+  when 'safe_reboot'
+    safe_reboot
+  when 'internet_test'
+    internet_test
+  when 'client_mac'
+    print_client_mac
+  when 'wired_connections'
+    print_wired_connections
+  when 'wired_devices_info'
+    print_wired_devices_info
+  when 'wifi_devices_info'
+    print_wifi_devices_info
+  when 'system_time'
+    print_system_time
+  when 'flash_info'
+    print_flash_info
+  when 'wan'
+    wan_control(ARGV[1])
+  when 'wifi'
+    wifi_control(ARGV[1])
+  when 'lan'
+    lan_control(ARGV[1])
+  when 'disk'
+    disk_control(ARGV[1])
+  when 'devices'
+    devices_control(ARGV[1])
+  when 'backlight'
+    backlight_control(ARGV[1])
+  when 'security'
+    security_control(ARGV[1])
+  when 'firmware'
+    firmware_control(ARGV[1])
+  else
+    puts "unrecognized command"
+    puts
+    print_help
+  end
+end
