@@ -1,0 +1,36 @@
+{
+    "code": 0,
+    "devices": [
+        {
+            "bandwidth": "20M",
+            "conn_type": 2,
+            "group": "white",
+            "host_name": "fairy",
+            "hostname": "fairy",
+            "ip": "192.168.18.100",
+            "leaseTime": 86400,
+            "local": 1,
+            "mac": "14:10:9F:EA:49:33",
+            "rssi1": "-44",
+            "rssi2": "0",
+            "ssi0": "-48",
+            "tag": "white",
+            "type": "2"
+        },
+        {
+            "bandwidth": "20M",
+            "conn_type": 3,
+            "group": "white",
+            "host_name": "mini-fairy",
+            "hostname": "mini-fairy",
+            "ip": "192.168.18.105",
+            "leaseTime": 84280,
+            "mac": "84:8E:0C:C4:96:22",
+            "rssi1": "0",
+            "rssi2": "-71",
+            "ssi0": "-51",
+            "tag": "white",
+            "type": "3"
+        }
+    ]
+}

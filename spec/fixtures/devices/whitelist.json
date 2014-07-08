@@ -1,0 +1,117 @@
+{
+    "code": 0,
+    "devices": [
+        {
+            "conn_type": 1,
+            "host_name": "360",
+            "hostname": "360",
+            "ip": "192.168.18.100",
+            "mac": "D0:AE:EC:95:DD:AA",
+            "type": "1"
+        },
+        {
+            "conn_type": 2,
+            "host_name": "\u672a\u547d\u540d\u8bbe\u5907",
+            "hostname": "no hostname",
+            "ip": "192.168.18.101",
+            "mac": "00:15:61:DD:D7:BB",
+            "type": "2"
+        },
+        {
+            "conn_type": 2,
+            "host_name": "Windows-Phone",
+            "hostname": "Windows-Phone",
+            "ip": "192.168.18.104",
+            "mac": "54:79:75:B8:1B:CC",
+            "type": "2"
+        },
+        {
+            "conn_type": 2,
+            "host_name": "android-7b52be3",
+            "hostname": "android-7b52be3",
+            "ip": "192.168.18.106",
+            "mac": "24:1B:13:81:38:DD",
+            "type": "2"
+        },
+        {
+            "conn_type": 2,
+            "host_name": "Meiosis",
+            "hostname": "Meiosis",
+            "ip": "192.168.18.109",
+            "mac": "A8:FA:D8:2B:A6:EE",
+            "type": "2"
+        },
+        {
+            "conn_type": 2,
+            "host_name": "MI2C-Xiaomi2",
+            "hostname": "MI2C-Xiaomi2",
+            "ip": "192.168.18.111",
+            "mac": "AC:F7:F3:1A:D8:FF",
+            "type": "2"
+        },
+        {
+            "conn_type": 1,
+            "host_name": "Peifengs-iPhone",
+            "hostname": "Peifengs-iPhone",
+            "ip": "192.168.18.110",
+            "mac": "78:A3:E4:42:BE:00",
+            "type": "1"
+        },
+        {
+            "conn_type": 2,
+            "host_name": "android-6e75931",
+            "hostname": "android-6e75931",
+            "ip": "192.168.18.108",
+            "mac": "08:7A:4C:A9:16:11",
+            "type": "2"
+        },
+        {
+            "conn_type": 2,
+            "host_name": "\u672a\u547d\u540d\u8bbe\u5907",
+            "hostname": "no hostname",
+            "ip": "192.168.18.108",
+            "mac": "28:EF:01:FA:5A:22",
+            "type": "2"
+        },
+        {
+            "conn_type": 3,
+            "host_name": "Peifengs-Air-2",
+            "hostname": "Peifengs-Air-2",
+            "ip": "192.168.18.106",
+            "mac": "98:FE:94:3F:19:33",
+            "type": "3"
+        },
+        {
+            "conn_type": 3,
+            "host_name": "YellowSubmarine",
+            "hostname": "YellowSubmarine",
+            "ip": "192.168.18.102",
+            "mac": "B0:9F:BA:EC:34:44",
+            "type": "3"
+        },
+        {
+            "conn_type": 3,
+            "host_name": "fairy",
+            "hostname": "fairy",
+            "ip": "192.168.18.101",
+            "mac": "14:10:9F:EA:49:55",
+            "type": "3"
+        },
+        {
+            "conn_type": 1,
+            "host_name": "raspberrypi",
+            "hostname": "raspberrypi",
+            "ip": "192.168.18.107",
+            "mac": "B8:27:EB:35:35:66",
+            "type": "1"
+        },
+        {
+            "conn_type": 3,
+            "host_name": "mini-fairy",
+            "hostname": "mini-fairy",
+            "ip": "192.168.18.105",
+            "mac": "84:8E:0C:C4:96:77",
+            "type": "3"
+        }
+    ]
+}

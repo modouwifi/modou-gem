@@ -1,0 +1,17 @@
+{
+    "dns1": "192.168.111.1",
+    "dns1Method": "",
+    "dns2": "192.168.111.1",
+    "dns2Method": "",
+    "gateway": "192.168.111.1",
+    "ip": "192.168.111.183",
+    "mac": "C0:3D:46:00:09:22",
+    "macCloneEnabled": false,
+    "macCloneMac": "",
+    "mask": "255.255.255.0",
+    "mtu": "1500",
+    "mtuMethod": "",
+    "stp": "",
+    "type": "DHCP",
+    "uptime": "327701"
+}

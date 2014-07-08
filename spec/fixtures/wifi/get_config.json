@@ -1,0 +1,39 @@
+{
+    "2g": {
+        "ap_enabled": false,
+        "apsd_enabled": true,
+        "band_width_mode": 1,
+        "beacon": 100,
+        "broadcastssid": true,
+        "channel": 0,
+        "enabled": true,
+        "encrypt": "TKIPAES",
+        "mac": "C0:3D:46:00:09:fe",
+        "net_type": 9,
+        "password": "12345678",
+        "power": 100,
+        "security_mode": "WPAPSKWPA2PSK",
+        "shortgi_enabled": true,
+        "ssid": "modou-fye",
+        "wmm_enabled": true
+    },
+    "5g": {
+        "ap_enabled": false,
+        "apsd_enabled": true,
+        "band_width_mode": 0,
+        "beacon": 100,
+        "broadcastssid": true,
+        "channel": 149,
+        "enabled": true,
+        "encrypt": "TKIPAES",
+        "mac": "C0:3D:46:00:09:ff",
+        "net_type": 14,
+        "password": "12345678",
+        "power": 100,
+        "same_as_2g": true,
+        "security_mode": "WPAPSKWPA2PSK",
+        "shortgi_enabled": true,
+        "ssid": "modou-fye",
+        "wmm_enabled": true
+    }
+}

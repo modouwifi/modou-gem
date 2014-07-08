@@ -1,0 +1,13 @@
+{
+    "code": 0,
+    "down": 436187,
+    "down_str": "436187",
+    "rx_dropped": 0,
+    "rx_packets": 689348,
+    "rx_rate": 0,
+    "tx_dropped": 0,
+    "tx_packets": 656477,
+    "tx_rate": 0,
+    "up": 305494,
+    "up_str": "305494"
+}
