@@ -13,10 +13,10 @@ $host = '192.168.18.1'
 ###############################
 
 def get(path)
-  fixture_path = "spec/fixtures" + path[4..-1] + '.json'
-  puts fixture_path
+  # fixture_path = "spec/fixtures" + path[4..-1] + '.json'
+  # puts fixture_path
   response = HTTParty.get("http://#{$host}#{path}", $auth || {})
-  File.write(fixture_path, response.body)
+  # File.write(fixture_path, response.body)
   response
 end
 

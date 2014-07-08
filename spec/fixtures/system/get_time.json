@@ -1,0 +1,4 @@
+{
+    "code": 500,
+    "msg": "This service (/api/system/get_time) is not supported yet. :("
+}

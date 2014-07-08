@@ -1,4 +1,4 @@
 {
-    "code": 6,
-    "msg": "is checking remote version......"
+    "code": 3,
+    "msg": "failed to download file in 60 seconds"
 }
