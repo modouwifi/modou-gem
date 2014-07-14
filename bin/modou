@@ -123,6 +123,7 @@ def print_version_info
 
   puts "Firmware Version: #{response['version1']}"
   puts "Hardware Version: #{response['version2']}"
+  puts "Firmware Track:   #{response['track']}"
 end
 
 def reboot
