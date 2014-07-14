@@ -1,10 +1,7 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-require 'httparty'
-require 'pry'
-require "ruby-progressbar"
-require "terminal-table"
+# require 'pry'
 
 $host = '192.168.18.1'
 
@@ -13,6 +10,8 @@ $host = '192.168.18.1'
 ###############################
 
 def get(path)
+  require 'httparty'
+
   # fixture_path = "spec/fixtures" + path[4..-1] + '.json'
   # puts fixture_path
   response = HTTParty.get("http://#{$host}#{path}", $auth || {})
@@ -21,6 +20,8 @@ def get(path)
 end
 
 def post(path, args={})
+  require 'httparty'
+
   HTTParty.post("http://#{$host}#{path}", args.merge($auth || {}))
 end
 
@@ -42,6 +43,8 @@ def signin_required!
 end
 
 def table_from_response(response)
+  require "terminal-table"
+
   table = Terminal::Table.new do |table|
     table.rows = response
   end
@@ -428,6 +431,8 @@ def download_firmware
   puts
   puts "downloading firmware..."
   puts
+
+  require "ruby-progressbar"
 
   progressbar = ProgressBar.create(:format => '%a |%b>>%i| %p%% %t')
 
