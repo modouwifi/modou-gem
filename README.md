@@ -2,6 +2,8 @@
 
 Your modouwifi CLI.
 
+Built based on [Modou HTTP API](https://github.com/modouwifi/modouwifi-api)
+
 Work in process.
 
 ## Installation
