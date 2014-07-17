@@ -45,6 +45,14 @@ end
 def table_from_response(response)
   require "terminal-table"
 
+  if response['mac']
+    require 'oui'
+
+    org = OUI::MACAddress.parse(response['mac']).organization
+
+    response['manufacturer'] = org.chinese_name || org.name
+  end
+
   table = Terminal::Table.new do |table|
     table.rows = response
   end
