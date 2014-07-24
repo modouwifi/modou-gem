@@ -39,6 +39,10 @@ def host
   load_config[get_ssid]['host'] rescue '192.168.18.1'
 end
 
+def password
+  load_config[get_ssid]['password']
+end
+
 ###############################
 # network helpers
 ###############################
@@ -81,7 +85,8 @@ end
 ###############################
 
 def sign_in
-  result = post('/api/auth/login', { body: %q{{ "password" : "dropbear" }} })
+  require "json"
+  result = post('/api/auth/login', { body: JSON({ "password" => password }) })
 
   cookie = result.headers['Set-Cookie']
 
