@@ -3,7 +3,21 @@
 
 # require 'pry'
 
-$host = '192.168.18.1'
+###############################
+# storage helpers
+###############################
+
+def load_config
+  YAML.load_file("~/.modou.yml") rescue {}
+end
+
+def save_config(config)
+  File.write("~/.modou.yml", config.to_yml)
+end
+
+def host
+  load_config[get_ssid]['host'] rescue '192.168.18.1'
+end
 
 ###############################
 # network helpers
@@ -14,7 +28,7 @@ def get_ssid
   when /Darwin/
     # https://stackoverflow.com/questions/4481005/get-wireless-ssid-through-shell-script-on-mac-os-x/4481019
 
-    `/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I | awk '/ SSID/ {print substr($0, index($0, $2))}'`
+    `/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I | awk '/ SSID/ {print substr($0, index($0, $2))}'`.chomp
   else
     raise 'can not retrieve SSID: only Mac OS X is supported at the moment'
   end
@@ -25,7 +39,7 @@ def get(path)
 
   # fixture_path = "spec/fixtures" + path[4..-1] + '.json'
   # puts fixture_path
-  response = HTTParty.get("http://#{$host}#{path}", $auth || {})
+  response = HTTParty.get("http://#{host}#{path}", $auth || {})
   # File.write(fixture_path, response.body)
   response
 end
@@ -33,7 +47,7 @@ end
 def post(path, args={})
   require 'httparty'
 
-  HTTParty.post("http://#{$host}#{path}", args.merge($auth || {}))
+  HTTParty.post("http://#{host}#{path}", args.merge($auth || {}))
 end
 
 ###############################
