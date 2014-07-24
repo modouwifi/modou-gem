@@ -9,6 +9,17 @@ $host = '192.168.18.1'
 # network helpers
 ###############################
 
+def get_ssid
+  case `uname`
+  when /Darwin/
+    # https://stackoverflow.com/questions/4481005/get-wireless-ssid-through-shell-script-on-mac-os-x/4481019
+
+    `/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I | awk '/ SSID/ {print substr($0, index($0, $2))}'`
+  else
+    raise 'can not retrieve SSID: only Mac OS X is supported at the moment'
+  end
+end
+
 def get(path)
   require 'httparty'
 
