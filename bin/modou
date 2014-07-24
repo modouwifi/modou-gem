@@ -30,7 +30,6 @@ end
 ###############################
 
 def sign_in
-  # result = HTTParty.post("http://#{$host}/api/auth/login", body: %q{{ "password" : "dropbear" }})
   result = post('/api/auth/login', { body: %q{{ "password" : "dropbear" }} })
 
   cookie = result.headers['Set-Cookie']
