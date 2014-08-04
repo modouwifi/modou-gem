@@ -179,6 +179,13 @@ def print_help
   puts 'modou devices whitelisted'
   puts 'modou devices blacklisted'
   puts 'modou devices graylisted'
+
+  puts
+  puts "========== applications =========="
+  puts "modou apps installed"
+  # puts "modou apps info APP_ID"
+  # puts "modou apps install APP_ID"
+  # puts "modou apps install_custom"
 end
 
 def print_version_info
@@ -428,6 +435,24 @@ def devices_control(command)
   end
 end
 
+def apps_control(command)
+  signin_required!
+
+  case command
+  when 'installed'
+    response = get('/api/plugin/installed_plugins')
+
+    if response['plugins'].empty?
+      puts 'no apps installed.'
+    else
+      response['plugins'].each do |app|
+        table = table_from_response(app)
+        puts table
+      end
+    end
+  end
+end
+
 ###############################
 # firmware upgrade
 ###############################
@@ -602,6 +627,8 @@ else
     security_control(ARGV[1])
   when 'firmware'
     firmware_control(ARGV[1])
+  when 'apps'
+    apps_control(ARGV[1])
   else
     puts "unrecognized command"
     puts
