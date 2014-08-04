@@ -186,6 +186,10 @@ def print_help
   # puts "modou apps info APP_ID"
   # puts "modou apps install APP_ID"
   # puts "modou apps install_custom"
+
+  puts
+  puts "========== app store =========="
+  puts "modou store list_apps"
 end
 
 def print_version_info
@@ -453,6 +457,24 @@ def apps_control(command)
   end
 end
 
+def store_control(command)
+  store_endpoint = 'http://appstore.ly.md'
+  require "httparty"
+
+  case command
+  when 'list_apps'
+    response = HTTParty.get(store_endpoint + '/list')
+
+    data = Hash.new
+
+    response.each { |app| data[app['name']] = app['description'] }
+
+    table = table_from_response(data)
+
+    puts table
+  end
+end
+
 ###############################
 # firmware upgrade
 ###############################
@@ -629,6 +651,8 @@ else
     firmware_control(ARGV[1])
   when 'apps'
     apps_control(ARGV[1])
+  when 'store'
+    store_control(ARGV[1])
   else
     puts "unrecognized command"
     puts
