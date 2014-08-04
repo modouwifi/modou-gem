@@ -190,6 +190,7 @@ def print_help
   puts
   puts "========== app store =========="
   puts "modou store list_apps"
+  puts "modou store info APP_NAME"
 end
 
 def print_version_info
@@ -472,6 +473,18 @@ def store_control(command)
     table = table_from_response(data)
 
     puts table
+  when 'info'
+    response = HTTParty.get(store_endpoint + '/list')
+
+    app_info = response.select { |app| app['name'] == ARGV[2] }.first
+
+    if app_info
+      table = table_from_response(app_info)
+
+      puts table
+    else
+      puts "there is no app named '#{ARGV[2]}'"
+    end
   end
 end
 
