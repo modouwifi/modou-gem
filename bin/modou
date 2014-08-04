@@ -88,9 +88,9 @@ def sign_in
   require "json"
   result = post('/api/auth/login', { body: JSON({ "password" => password }) })
 
-  cookie = result.headers['Set-Cookie']
+  $cookie = result.headers['Set-Cookie']
 
-  $auth = { headers: { 'Cookie' => cookie }, timeout: 999 }
+  $auth = { headers: { 'Cookie' => $cookie }, timeout: 999 }
 end
 
 def signin_required!
@@ -192,6 +192,7 @@ def print_help
   puts "modou store list_apps"
   puts "modou store info APP_NAME"
   puts "modou store download APP_NAME"
+  puts "modou store install APP_NAME"
 end
 
 def print_version_info
@@ -472,14 +473,37 @@ def app_get(path)
   @store_response
 end
 
-def app_info(app_name)
-  app_get('/list').select { |app| app['name'] == app_name }.first
+def app_name
+  ARGV[2]
+end
+
+def app_info
+  app_get('/list').select { |app| app['name'] == app_name }.first if app_name
+end
+
+def app_filename
+  "#{app_name}-#{app_info['version']}.mpk" if app_info
+end
+
+def app_valid_file?(filename, size, md5_sum)
+  full_path = File.expand_path("../../tmp/#{filename}", __FILE__)
+
+  if File.size(full_path) != size.to_i
+    puts "file size mismatch"
+    false
+  elsif Digest::MD5.file(full_path).hexdigest != md5_sum
+    puts "incorrect md5 check sum"
+    false
+  else
+    true
+  end
+end
+
+def app_download_file!
+  `wget #{app_info['url']} -O tmp/#{app_filename}`
 end
 
 def store_control(command)
-  app_name = ARGV[2]
-  app_info = app_info(app_name) if app_name
-
   case command
   when 'list_apps'
     Hash.new.tap do |data|
@@ -499,9 +523,23 @@ def store_control(command)
     end
   when 'download'
     if app_info
-      filename = "#{app_name}-#{app_info['version']}.mpk"
+      app_download_file!
+    else
+      puts "there is no app named '#{app_name}'"
+    end
+  when 'install'
+    signin_required!
 
-      `wget #{app_info['url']} -O tmp/#{filename}`
+    if app_info
+      if app_valid_file?(app_filename, app_info['size'], app_info['md5_sum'])
+        puts "file already downloaded..."
+      else
+        app_download_file!
+      end
+
+      cli_command = %{curl -b "#{$cookie}" -F name=#{app_info['name']} -F size=#{app_info['size']} -F file=@./tmp/#{app_filename} http://#{host}/api/plugin/install_custom}
+
+      `#{cli_command}`
     else
       puts "there is no app named '#{app_name}'"
     end
