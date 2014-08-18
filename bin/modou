@@ -135,6 +135,7 @@ def print_help
   puts "modou wifi_devices_info"
   puts "modou system_time"
   puts "modou flash_info"
+  puts "modou ucode"
 
   puts
   puts "========== firmware =========="
@@ -371,6 +372,15 @@ def print_flash_info
   signin_required!
 
   response = get('/api/devices/ddr2_flash')
+
+  table = table_from_response(response)
+  puts table
+end
+
+def print_ucode
+  signin_required!
+
+  response = get('/api/system/get_ucode')
 
   table = table_from_response(response)
   puts table
@@ -743,6 +753,8 @@ else
     print_system_time
   when 'flash_info'
     print_flash_info
+  when 'ucode'
+    print_ucode
   when 'wan'
     wan_control(ARGV[1])
   when 'wifi'
