@@ -195,6 +195,10 @@ def print_help
   puts "modou store info APP_NAME"
   puts "modou store download APP_NAME"
   puts "modou store install APP_NAME"
+
+  puts
+  puts "========== shell commands =========="
+  puts "modou command history"
 end
 
 def print_version_info
@@ -551,6 +555,28 @@ def store_control(command)
 end
 
 ###############################
+# run shell commands
+###############################
+
+def shell_command_control(command)
+  signin_required!
+
+  case command
+  when 'history'
+    response = get('/api/commands/history')
+
+    if response['cmds'].empty?
+      puts 'no commands executed.'
+    else
+      response['cmds'].each do |cmd|
+        table = table_from_response(cmd)
+        puts table
+      end
+    end
+  end
+end
+
+###############################
 # firmware upgrade
 ###############################
 
@@ -660,12 +686,16 @@ def upgrade
 
   get('/api/system/upgrade_version')
 
+  require "ruby-progressbar"
+
+  progressbar = ProgressBar.create(:format => '%a |%b>>%i| %p%% %t')
+
   begin
     sleep 1
 
     response = get('/api/system/check_upgrade_progress')
 
-    p response
+    progressbar.progress = response['percent'].to_i
 
   end while response['code'] != '0'
 end
@@ -728,6 +758,8 @@ else
     apps_control(ARGV[1])
   when 'store'
     store_control(ARGV[1])
+  when 'command'
+    shell_command_control(ARGV[1])
   else
     puts "unrecognized command"
     puts
