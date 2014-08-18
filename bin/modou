@@ -561,7 +561,12 @@ end
 def shell_command_control(command)
   signin_required!
 
-  case command
+  case command.first
+  when 'run'
+    response = post('/api/commands/run', { body: JSON({ "cmd" => command.last }) })
+
+    table = table_from_response(response)
+    puts table
   when 'history'
     response = get('/api/commands/history')
 
@@ -759,7 +764,7 @@ else
   when 'store'
     store_control(ARGV[1])
   when 'command'
-    shell_command_control(ARGV[1])
+    shell_command_control(ARGV[1..-1])
   else
     puts "unrecognized command"
     puts
