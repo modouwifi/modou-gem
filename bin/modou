@@ -36,6 +36,8 @@ def save_config(config)
 end
 
 def host
+  return ENV['MODOU_HOST'] if ENV['MODOU_HOST']
+
   load_config[get_ssid]['host'] rescue '192.168.18.1'
 end
 
@@ -675,7 +677,7 @@ end
 if ARGV.count == 0
   print_help
 else
-  if password.nil?
+  if host.nil?
     prompt_for_config
   end
 
