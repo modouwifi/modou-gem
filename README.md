@@ -7,6 +7,7 @@ Built based on [Modou HTTP API](https://github.com/modouwifi/modouwifi-api)
 Work in process.
 
 [![Build Status](https://travis-ci.org/modouwifi/modou-gem.svg?branch=master)](https://travis-ci.org/modouwifi/modou-gem)
+[![Code Climate](https://codeclimate.com/github/modouwifi/modou-gem/badges/gpa.svg)](https://codeclimate.com/github/modouwifi/modou-gem)
 
 ## Installation
 
